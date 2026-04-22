@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart ParkEase Handbook</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&family=Syne:wght@700;800&display=swap');
+
+    :root {
+      --bg: #0f0f0f;
+      --card: #1a1a1a;
+      --card-alt: #141414;
+      --text: #f0f0f0;
+      --body: #cccccc;
+      --muted: #888888;
+      --border: #2a2a2a;
+      --red: #ff0001;
+      --lime: #d9ff57;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top right, rgba(255, 0, 1, 0.14), transparent 28%),
+        radial-gradient(circle at top left, rgba(217, 255, 87, 0.08), transparent 24%),
+        var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page-shell {
+      width: min(100%, 900px);
+      margin: 0 auto;
+      padding: 40px 20px 72px;
+    }
+
+    .cover {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(255, 0, 1, 0.08), transparent 42%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
+        #121212;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 28px;
+      padding: 44px;
+      box-shadow: var(--shadow);
+      animation: cardFade 0.3s ease both;
+    }
+
+    .cover::after {
+      content: "";
+      position: absolute;
+      inset: auto -80px -120px auto;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 0, 1, 0.18), transparent 68%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(217, 255, 87, 0.28);
+      color: var(--lime);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(217, 255, 87, 0.06);
+    }
+
+    .cover h1 {
+      margin: 24px 0 8px;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(80px, 10vw, 96px);
+      line-height: 0.95;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 20px;
+      color: var(--body);
+      max-width: 720px;
+    }
+
+    .hero-underline {
+      width: 180px;
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--lime), rgba(217, 255, 87, 0.25));
+      margin: 22px 0 24px;
+    }
+
+    .one-liner {
+      margin: 0;
+      max-width: 760px;
+      font-size: 16px;
+      color: var(--body);
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 28px 0 30px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .stat-pill {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      min-width: 160px;
+      padding: 14px 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .stat-pill strong {
+      font-family: 'Syne', sans-serif;
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 0.95;
+      color: var(--red);
+      letter-spacing: -0.04em;
+    }
+
+    .stat-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--body);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .stat-note {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      line-height: 1.1;
+      color: var(--text);
+      letter-spacing: -0.03em;
+    }
+
+    .cover-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    .cover-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .cover-table th,
+    .cover-table td {
+      padding: 16px 18px;
+      vertical-align: top;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cover-table tr:last-child th,
+    .cover-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .cover-table thead th {
+      background: #111111;
+      color: var(--lime);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .cover-table tbody th {
+      width: 180px;
+      color: var(--lime);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .cover-table tbody tr:nth-child(even) td,
+    .cover-table tbody tr:nth-child(even) th {
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .name-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .name-chip {
+      display: inline-flex;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 0, 1, 0.08);
+      border: 1px solid rgba(255, 0, 1, 0.18);
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .divider {
+      width: 100%;
+      height: 2px;
+      margin: 28px 0 24px;
+      background: linear-gradient(90deg, var(--red), rgba(255, 0, 1, 0.16));
+      border-radius: 999px;
+    }
+
+    .content {
+      display: grid;
+      gap: 24px;
+    }
+
+    .section-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+      animation: cardFade 0.3s ease both;
+    }
+
+    .section-card::before {
+      content: attr(data-number);
+      position: absolute;
+      top: 10px;
+      right: 16px;
+      font-family: 'Syne', sans-serif;
+      font-size: 160px;
+      line-height: 1;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.03);
+      pointer-events: none;
+      transition: transform 0.3s ease;
+    }
+
+    .section-card:hover::before {
+      transform: translateY(-8px);
+    }
+
+    .section-card h2 {
+      margin: 0 0 18px;
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .section-card p {
+      margin: 0 0 14px;
+      font-size: 15px;
+      color: var(--body);
+    }
+
+    .section-card p:last-child {
+      margin-bottom: 0;
+    }
+
+    .fancy-list {
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 14px;
+    }
+
+    .fancy-list li {
+      position: relative;
+      padding-left: 22px;
+      color: var(--body);
+      font-size: 15px;
+      opacity: 0;
+      transform: translateX(-14px);
+      animation: bulletIn 0.45s ease forwards;
+      animation-delay: calc(var(--i, 0) * 50ms);
+    }
+
+    .fancy-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.82em;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 0 4px rgba(255, 0, 1, 0.12);
+    }
+
+    .mini-grid,
+    .team-grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .mini-card,
+    .team-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      min-height: 100%;
+    }
+
+    .mini-card h3,
+    .team-card h3 {
+      margin: 0 0 6px;
+      font-family: 'Syne', sans-serif;
+      font-size: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .role-tag {
+      display: inline-flex;
+      margin-bottom: 12px;
+      color: var(--lime);
+      font-weight: 700;
+    }
+
+    .screen-line,
+    .owned-line,
+    .honest-line,
+    .shared-line,
+    .stack-note {
+      color: var(--body);
+      font-size: 14px;
+    }
+
+    .screen-line strong,
+    .owned-line strong,
+    .honest-line strong,
+    .shared-line strong,
+    .stack-note strong {
+      color: var(--text);
+    }
+
+    .mini-card .fancy-list,
+    .team-card .fancy-list {
+      margin-top: 8px;
+      gap: 10px;
+    }
+
+    .stack-grid {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .stack-row {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 150px minmax(0, 1fr);
+      align-items: start;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .stack-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .stack-label {
+      color: var(--red);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .tech-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tech-pill {
+      display: inline-flex;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--lime);
+      color: #050505;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .flow-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .flow-step {
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr);
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .flow-step:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .flow-number {
+      font-family: 'Syne', sans-serif;
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 0.9;
+      color: var(--red);
+    }
+
+    .flow-copy {
+      color: var(--body);
+      font-size: 15px;
+    }
+
+    .honest-card {
+      background: var(--card-alt);
+      border-left: 3px solid var(--lime);
+    }
+
+    .quote-block {
+      position: relative;
+      padding: 26px 28px 8px 28px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    .quote-block::before {
+      content: "\"";
+      position: absolute;
+      top: -22px;
+      left: 16px;
+      font-family: 'Syne', sans-serif;
+      font-size: 110px;
+      line-height: 1;
+      color: var(--lime);
+    }
+
+    .quote-block p {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .section-card strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .content .section-card:nth-child(1) { animation-delay: 0.04s; }
+    .content .section-card:nth-child(2) { animation-delay: 0.08s; }
+    .content .section-card:nth-child(3) { animation-delay: 0.12s; }
+    .content .section-card:nth-child(4) { animation-delay: 0.16s; }
+    .content .section-card:nth-child(5) { animation-delay: 0.20s; }
+    .content .section-card:nth-child(6) { animation-delay: 0.24s; }
+    .content .section-card:nth-child(7) { animation-delay: 0.28s; }
+    .content .section-card:nth-child(8) { animation-delay: 0.32s; }
+    .content .section-card:nth-child(9) { animation-delay: 0.36s; }
+
+    @keyframes cardFade {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes bulletIn {
+      from {
+        opacity: 0;
+        transform: translateX(-14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page-shell {
+        padding: 18px 14px 40px;
+      }
+
+      .cover,
+      .section-card {
+        padding: 24px;
+      }
+
+      .cover h1 {
+        font-size: clamp(58px, 18vw, 78px);
+      }
+
+      .stack-row,
+      .flow-step {
+        grid-template-columns: 1fr;
+      }
+
+      .section-card::before {
+        font-size: 112px;
+        top: 14px;
+      }
+
+      .cover-table th {
+        width: 120px;
+      }
+    }
+
+    @media print {
+      @page {
+        margin: 14mm;
+      }
+
+      :root {
+        --bg: #ffffff;
+        --card: #ffffff;
+        --card-alt: #f7f7f7;
+        --text: #111111;
+        --body: #222222;
+        --muted: #555555;
+        --border: #d8d8d8;
+        --shadow: none;
+      }
+
+      body {
+        background: #ffffff;
+        color: #111111;
+      }
+
+      .cover,
+      .section-card,
+      .quote-block {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+
+      .cover {
+        background: #ffffff;
+      }
+
+      .divider {
+        background: #111111;
+      }
+
+      .tech-pill {
+        background: #111111;
+        color: #ffffff;
+      }
+
+      .cover-table th {
+        background: #111111;
+        color: #ffffff;
+      }
+
+      .cover-table tbody tr:nth-child(even) td,
+      .cover-table tbody tr:nth-child(even) th,
+      .mini-card,
+      .team-card,
+      .quote-block {
+        background: #fafafa;
+      }
+
+      .section-card::before {
+        color: rgba(0, 0, 0, 0.06);
+      }
+
+      .fancy-list li,
+      .section-card,
+      .cover {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <header class="cover">
+      <span class="eyebrow">Minor Project Report</span>
+      <h1>Smart ParkEase</h1>
+      <p class="subtitle">AI-Based Smart Parking Allocation and Management System</p>
+      <div class="hero-underline"></div>
+      <p class="one-liner"><strong>Smart ParkEase</strong> is a browser-first parking control center for operators who need to assign bays, log vehicles, bill exits, and read parking activity without paper chaos.</p>
+
+      <ul class="pill-row" aria-label="Project stats">
+        <li class="stat-pill">
+          <strong>3</strong>
+          <span class="stat-label">Team Size</span>
+        </li>
+        <li class="stat-pill">
+          <span class="stat-note">React + Firebase</span>
+          <span class="stat-label">Main Tech</span>
+        </li>
+        <li class="stat-pill">
+          <span class="stat-note">Smart Parking</span>
+          <span class="stat-label">Domain</span>
+        </li>
+      </ul>
+
+      <div class="cover-grid">
+        <table class="cover-table" aria-label="Submission details">
+          <thead>
+            <tr>
+              <th>Detail</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Submitted By</th>
+              <td>
+                <div class="name-stack">
+                  <span class="name-chip">Yuvraj</span>
+                  <span class="name-chip">Raj</span>
+                  <span class="name-chip">Lucy</span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th>Submitted To</th>
+              <td>Faculty guide not listed in the reviewed synopsis.</td>
+            </tr>
+            <tr>
+              <th>Report Type</th>
+              <td>Synopsis-backed <strong>minor project</strong> handbook.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </header>
+
+    <div class="divider" aria-hidden="true"></div>
+
+    <div class="content">
+      <section class="section-card" data-number="01">
+        <h2>Why This Needed to Exist</h2>
+        <ul class="fancy-list">
+          <li style="--i: 0;"><strong>Circling hurts first</strong>: drivers waste time and fuel because nobody at the gate can say with confidence which bays are actually free.</li>
+          <li style="--i: 1;"><strong>Paper breaks under pressure</strong>: staff write vehicle numbers by hand, guess slot status, and the whole lot slows down when traffic spikes.</li>
+          <li style="--i: 2;"><strong>Checkout becomes a trust issue</strong>: billing depends on rushed time math, so mistakes show up right when vehicles are trying to leave.</li>
+          <li style="--i: 3;"><strong>Management is flying half-blind</strong>: without a live occupancy view, daily revenue and lot status stay buried in scattered notes.</li>
+        </ul>
+      </section>
+
+      <section class="section-card" data-number="02">
+        <h2>The Product</h2>
+        <p><strong>Smart ParkEase</strong> turns parking operations into one browser workflow. An operator logs in, sees a live slot grid, registers incoming vehicles, gets a suggested bay, overrides it when the ground reality calls for it, processes exit billing, and checks the revenue picture without bouncing between paper logs and memory.</p>
+        <p>What gives this more weight than a generic dashboard is the tight <strong>operator journey</strong>: the docs describe a full entry-to-exit flow, with QR demonstration support in the synopsis and optional plate-scan assist in the current demo build.</p>
+        <ul class="fancy-list">
+          <li style="--i: 0;"><strong>Live Slot Grid</strong> - Shows free and occupied bays in one color-coded view.</li>
+          <li style="--i: 1;"><strong>Auto Allocation</strong> - Suggests the next available slot so gate decisions stay quick.</li>
+          <li style="--i: 2;"><strong>Manual Override</strong> - Lets the operator pick a different bay when traffic conditions demand it.</li>
+          <li style="--i: 3;"><strong>Vehicle Entry</strong> - Captures number, type, and arrival details in one move.</li>
+          <li style="--i: 4;"><strong>Billing and Exit</strong> - Calculates parking duration, generates the amount, and releases the slot.</li>
+          <li style="--i: 5;"><strong>Dashboard and Analytics</strong> - Surfaces occupancy counts, billing totals, and revenue trends at a glance.</li>
+        </ul>
+      </section>
+
+      <section class="section-card" data-number="03">
+        <h2>The Users</h2>
+        <p>The current build still runs through one <strong>admin console</strong>, but the project docs make it clear who the workflow is shaped for.</p>
+        <div class="mini-grid">
+          <article class="mini-card">
+            <h3>Parking Attendant</h3>
+            <div class="role-tag">Frontline operator</div>
+            <ul class="fancy-list">
+              <li style="--i: 0;">Register incoming vehicles fast.</li>
+              <li style="--i: 1;">Accept the suggested bay or override it.</li>
+              <li style="--i: 2;">Process checkout and free the slot.</li>
+            </ul>
+            <p class="screen-line"><strong>Main screen:</strong> Dashboard, Parking Grid, Vehicle Entry, and Billing.</p>
+          </article>
+
+          <article class="mini-card">
+            <h3>Lot Supervisor</h3>
+            <div class="role-tag">Operations view</div>
+            <ul class="fancy-list">
+              <li style="--i: 0;">Watch occupancy pressure in real time.</li>
+              <li style="--i: 1;">Check daily earnings and recent transactions.</li>
+              <li style="--i: 2;">Spot where the lot flow is slowing down.</li>
+            </ul>
+            <p class="screen-line"><strong>Main screen:</strong> Dashboard and Analytics.</p>
+          </article>
+
+          <article class="mini-card">
+            <h3>Admin Operator</h3>
+            <div class="role-tag">Control point</div>
+            <ul class="fancy-list">
+              <li style="--i: 0;">Set up slots and keep the lot current.</li>
+              <li style="--i: 1;">Manage secure login access.</li>
+              <li style="--i: 2;">Review the full operational trail from entry to billing.</li>
+            </ul>
+            <p class="screen-line"><strong>Main screen:</strong> Login, Settings, and the full operations dashboard.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-card" data-number="04">
+        <h2>The Engine Room ⚙️</h2>
+        <div class="stack-grid">
+          <div class="stack-row">
+            <div class="stack-label">Frontend</div>
+            <div class="tech-pills">
+              <span class="tech-pill">React.js</span>
+              <span class="tech-pill">Vite</span>
+              <span class="tech-pill">Tailwind CSS</span>
+              <span class="tech-pill">React Router</span>
+              <span class="tech-pill">React Hook Form</span>
+              <span class="tech-pill">Zod</span>
+            </div>
+          </div>
+          <div class="stack-row">
+            <div class="stack-label">Backend</div>
+            <div class="tech-pills">
+              <span class="tech-pill">Firebase Auth</span>
+              <span class="tech-pill">Firestore</span>
+              <span class="tech-pill">Firebase Storage</span>
+              <span class="tech-pill">GitHub</span>
+            </div>
+          </div>
+          <div class="stack-row">
+            <div class="stack-label">AI</div>
+            <div class="tech-pills">
+              <span class="tech-pill">Auto-allocation</span>
+              <span class="tech-pill">fast-alpr</span>
+              <span class="tech-pill">ANPR API</span>
+              <span class="tech-pill">OCR Match Assist</span>
+            </div>
+          </div>
+          <div class="stack-row">
+            <div class="stack-label">Utilities</div>
+            <div class="tech-pills">
+              <span class="tech-pill">Recharts / Chart.js</span>
+              <span class="tech-pill">date-fns</span>
+              <span class="tech-pill">QR Ticket Demo</span>
+            </div>
+          </div>
+          <div class="stack-row">
+            <div class="stack-label">Deployment</div>
+            <div class="tech-pills">
+              <span class="tech-pill">Firebase Hosting</span>
+              <span class="tech-pill">Vercel</span>
+              <span class="tech-pill">Python Sidecar API</span>
+            </div>
+          </div>
+        </div>
+        <p class="stack-note"><strong>Why this mix:</strong> the team chose tools that were free, readable, and quick to iterate with, so effort stayed on the parking flow instead of infrastructure weight.</p>
+      </section>
+
+      <section class="section-card" data-number="05">
+        <h2>The Flow</h2>
+        <div class="flow-list">
+          <div class="flow-step">
+            <div class="flow-number">1</div>
+            <div class="flow-copy"><strong>Log in</strong> and the operator lands on the dashboard, where total slots, occupied bays, free bays, and the revenue snapshot show up first.</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-number">2</div>
+            <div class="flow-copy"><strong>Check the grid</strong> and the lot reads like a live map, with bay status visible before anyone starts typing.</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-number">3</div>
+            <div class="flow-copy"><strong>Register the vehicle</strong> by entering the number and type, with optional plate-scan assist in the current demo when an image is available.</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-number">4</div>
+            <div class="flow-copy"><strong>Assign the bay</strong> through auto-allocation or a manual override, and the operator sees the decision reflected in the working flow right away.</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-number">5</div>
+            <div class="flow-copy"><strong>Process the exit</strong> by pulling up the active vehicle, reviewing the stay length, generating the amount, and releasing the slot back to availability.</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-number">6</div>
+            <div class="flow-copy"><strong>Read the trends</strong> in analytics so the lot manager sees not just what happened now, but how the parking business has been moving across the day or month.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card" data-number="06">
+        <h2>Who Built This</h2>
+        <div class="team-grid">
+          <article class="team-card">
+            <h3>Yuvraj</h3>
+            <div class="role-tag">Frontend Development and UI</div>
+            <p class="owned-line"><strong>Owned:</strong></p>
+            <ul class="fancy-list">
+              <li style="--i: 0;">Set up the React.js and Vite interface.</li>
+              <li style="--i: 1;">Built the Tailwind CSS layout and client-side navigation.</li>
+              <li style="--i: 2;">Handled entry, exit, and billing forms with validation.</li>
+            </ul>
+            <p class="honest-line"><strong>Figured out:</strong> how to keep the UI readable while the grid and forms stayed fast enough for gate-side work.</p>
+          </article>
+
+          <article class="team-card">
+            <h3>Raj</h3>
+            <div class="role-tag">Backend Logic, Database, and DevOps</div>
+            <p class="owned-line"><strong>Owned:</strong></p>
+            <ul class="fancy-list">
+              <li style="--i: 0;">Configured Firebase Authentication and Firestore structure.</li>
+              <li style="--i: 1;">Wrote slot auto-allocation and billing calculation logic.</li>
+              <li style="--i: 2;">Managed GitHub workflow and deployment setup.</li>
+            </ul>
+            <p class="honest-line"><strong>Figured out:</strong> the data flow that kept slot status, billing, and secure access from drifting out of sync.</p>
+          </article>
+
+          <article class="team-card">
+            <h3>Lucy</h3>
+            <div class="role-tag">Analytics, Testing, and Utilities</div>
+            <p class="owned-line"><strong>Owned:</strong></p>
+            <ul class="fancy-list">
+              <li style="--i: 0;">Built the revenue analytics layer and time-based utilities.</li>
+              <li style="--i: 1;">Ran functional, integration, usability, and security checks.</li>
+              <li style="--i: 2;">Developed documentation and the QR ticket feature.</li>
+            </ul>
+            <p class="honest-line"><strong>Figured out:</strong> where users hesitated in the flow and pushed changes like the slot legend and clearer exit action.</p>
+          </article>
+        </div>
+        <p class="shared-line"><strong>Shared work:</strong> the team handled requirement gathering, system design, integration testing, and final fit-and-finish together, which is why the product reads like one flow instead of three disconnected parts.</p>
+      </section>
+
+      <section class="section-card honest-card" data-number="07">
+        <h2>What's Not Done Yet</h2>
+        <ul class="fancy-list">
+          <li style="--i: 0;"><strong>Sensor truth is missing</strong>: slot state changes only when staff submit the form, because there are no physical occupancy sensors in this build.</li>
+          <li style="--i: 1;"><strong>Access is still flat</strong>: the workflow runs through one admin-style account, with no separate logins for vehicle owners or shift attendants.</li>
+          <li style="--i: 2;"><strong>The rollout stops short of payments and scale</strong>: bills are generated, but online payment and multi-location control are not part of the current version.</li>
+        </ul>
+      </section>
+
+      <section class="section-card" data-number="08">
+        <h2>If We Had More Time</h2>
+        <ul class="fancy-list">
+          <li style="--i: 0;"><strong>Build</strong> sensor-driven occupancy updates so bay status flips without staff input.</li>
+          <li style="--i: 1;"><strong>Add</strong> digital payments with instant receipts through SMS or email.</li>
+          <li style="--i: 2;"><strong>Extend</strong> the platform to multi-location control with role-based access and vehicle-type aware allocation.</li>
+        </ul>
+      </section>
+
+      <section class="section-card" data-number="09">
+        <h2>Why This Mattered</h2>
+        <div class="quote-block">
+          <p><strong>Smart ParkEase</strong> turned a daily parking headache into a live operating layer for the people at the gate. The team built slot visibility, entry logging, billing, analytics, and optional scan assistance while learning how UI, data, and testing have to hold together under pressure. The bigger lesson was not just how to ship code, but how to make sharp trade-offs and say plainly what is still missing. A good product does more than save time; it gives the people running the place some calm back.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
