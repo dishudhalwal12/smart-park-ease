@@ -13,12 +13,15 @@ Flow:
 3. The ALPR API detects the plate and returns OCR candidates.
 4. Apply the best match to the vehicle number field and continue normal slot assignment.
 
-## Frontend setup
+## Quick Start
 
-```bash
-npm install
-npm run dev
-```
+After cloning the repository and installing Node.js, VS Code, and Python:
+
+1. `cd SmartParkEase`
+2. `./setup.sh` (installs all dependencies)
+3. `./run.sh` (starts the app with ANPR service)
+
+The app will be running at http://localhost:5173
 
 ## Firebase setup
 
@@ -43,24 +46,3 @@ Optional frontend env:
 ```bash
 cp .env.example .env
 ```
-
-## ALPR API setup
-
-```bash
-cd services/alpr-api
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app:app --reload --port 8000
-```
-
-The frontend calls `http://127.0.0.1:8000` by default, or `VITE_ANPR_API_URL` if provided.
-
-In Vite development, the app uses `/api/anpr` and proxies that to `http://127.0.0.1:8000`, so the React app and Python API work together without hardcoding localhost into the browser request.
-
-## Notes
-
-- The React app still works without the ALPR API; attendants can continue entering vehicle numbers manually.
-- `fast-alpr` downloads and uses ONNX models, so the first recognition call can take longer than later scans.
-- If the entry screen shows the ANPR service as offline, start the Python API first:
-  `cd services/alpr-api && source .venv/bin/activate && uvicorn app:app --reload --port 8000`
