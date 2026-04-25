@@ -47,7 +47,8 @@ def _safe_value(value: Any) -> Any:
 
 def _normalize_plate(text: str) -> str:
     cleaned = re.sub(r"[^A-Za-z0-9]", "", text or "").upper()
-    if len(cleaned) < 6:
+    # Allow shorter plates (minimum 2 characters) for better compatibility
+    if len(cleaned) < 2:
         return ""
     return cleaned
 
@@ -57,13 +58,33 @@ def _collect_candidates(payload: Any) -> list[dict[str, Any]]:
 
     def visit(node: Any) -> None:
         if isinstance(node, dict):
-            text = node.get("text") or node.get("plate") or node.get("license_plate") or node.get("value")
-            confidence = node.get("confidence") or node.get("score") or node.get("probability")
+            # Support multiple naming conventions for plate text and confidence
+            text = (
+                node.get("text")
+                or node.get("rec_text")
+                or node.get("plate")
+                or node.get("license_plate")
+                or node.get("value")
+            )
+            confidence = (
+                node.get("confidence")
+                or node.get("rec_conf")
+                or node.get("score")
+                or node.get("probability")
+                or node.get("det_conf")
+            )
+
             normalized = _normalize_plate(str(text)) if text else ""
             if normalized:
                 try:
-                    confidence_value = float(confidence) if confidence is not None else 0.0
-                except Exception:
+                    # Handle confidence if it's a list (e.g., character-level probabilities)
+                    if isinstance(confidence, list) and confidence:
+                        confidence_value = sum(float(c) for c in confidence) / len(confidence)
+                    elif confidence is not None:
+                        confidence_value = float(confidence)
+                    else:
+                        confidence_value = 0.0
+                except (ValueError, TypeError):
                     confidence_value = 0.0
                 candidates.append({"plate": normalized, "confidence": max(0.0, min(confidence_value, 1.0))})
 
@@ -93,17 +114,26 @@ class AlprEngine:
     def __init__(self) -> None:
         self._engine = None
         self._startup_error = ""
+        
         if ALPR is None:
             self._startup_error = IMPORT_ERROR or "fast-alpr is not available"
+            print(f"ANPR startup error: {self._startup_error}")
             return
 
+        # Recommended robust models for fast-alpr
+        detector_model = "yolo-v9-t-384-license-plate-end2end"
+        ocr_model = "cct-xs-v2-global-model"
+        
+        print(f"Initializing ANPR engine with detector={detector_model} and ocr={ocr_model}...")
         try:
             self._engine = ALPR(
-                detector_model="yolo-v9-t-384-license-plate-end2end",
-                ocr_model="cct-xs-v2-global-model",
+                detector_model=detector_model,
+                ocr_model=ocr_model,
             )
-        except Exception as startup_error:  # pragma: no cover - runtime environment dependent
+            print("ANPR engine initialized successfully.")
+        except Exception as startup_error:
             self._startup_error = str(startup_error)
+            print(f"ANPR engine failed to start: {startup_error}")
 
     @property
     def is_ready(self) -> bool:
@@ -155,6 +185,7 @@ async def recognize(image: UploadFile = File(...)) -> dict[str, Any]:
     try:
         candidates = engine.predict(frame)
     except Exception as prediction_error:
+        print(f"ANPR prediction error: {prediction_error}")
         raise HTTPException(status_code=500, detail=f"ANPR processing failed: {prediction_error}") from prediction_error
 
     processing_ms = int((time.perf_counter() - started_at) * 1000)

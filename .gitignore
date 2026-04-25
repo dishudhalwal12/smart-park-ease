@@ -1,5 +1,15 @@
 .DS_Store
 node_modules
 dist
+.env
+.env.local
+.firebaserc
+.firebase
+.vercel
+venv
 .venv
 __pycache__
+*.pyc
+.cache
+.pytest_cache
+*.pkg
