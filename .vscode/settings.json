@@ -1,0 +1,6 @@
+{
+  "python.defaultInterpreterPath": "services/alpr-api/venv/bin/python",
+  "python.analysis.extraPaths": [
+    "./services/alpr-api"
+  ]
+}
